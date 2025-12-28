@@ -8,11 +8,10 @@ module.exports = async (req, res) => {
 
   try {
     const { mensagem } = req.body;
-    // Usando a chave que já está na sua Vercel
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
     
-    // Mudamos para gemini-pro que é o modelo mais estável para essa versão da API
-    const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+    // Nome do modelo atualizado para compatibilidade máxima
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" });
 
     const result = await model.generateContent(mensagem);
     const response = await result.response;
