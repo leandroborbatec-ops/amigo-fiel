@@ -8,8 +8,8 @@ module.exports = async (req, res) => {
     const { mensagem } = req.body;
     const apiKey = process.env.GEMINI_API_KEY;
 
-    // Tentando o gemini-pro na v1beta (muitas vezes é o único ativo no início)
-    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${apiKey}`, {
+    // Esta é a URL exata para contas novas com a API recém-ativada
+    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${apiKey}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -18,10 +18,15 @@ module.exports = async (req, res) => {
     });
 
     const data = await response.json();
-    if (data.error) throw new Error(data.error.message);
 
-    res.status(200).json({ resposta: data.candidates[0].content.parts[0].text });
+    if (data.error) {
+      throw new Error(data.error.message);
+    }
+
+    const textoResposta = data.candidates[0].content.parts[0].text;
+    res.status(200).json({ resposta: textoResposta });
+
   } catch (error) {
-    res.status(500).json({ resposta: "Google em sincronização: " + error.message });
+    res.status(500).json({ resposta: "Google processando ativação: " + error.message });
   }
 };
