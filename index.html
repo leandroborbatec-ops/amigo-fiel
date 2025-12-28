@@ -212,8 +212,8 @@
     const chatWindow = document.getElementById('chat-window');
     const inputMsg = document.getElementById('user-msg');
     
-    // ESTA URL SERÁ CRIADA NO PASSO 2
-    const URL_DO_SERVIDOR_SEGURO = "SUA_URL_AQUI";
+    // AJUSTADO: Agora aponta corretamente para a sua API na Vercel
+    const URL_DO_SERVIDOR_SEGURO = "/api/chat";
 
     function adicionarMensagem(texto, destaque = false) {
         const div = document.createElement('div');
@@ -227,15 +227,12 @@
         const texto = inputMsg.value.trim();
         if(!texto) return;
 
-        // Adiciona a mensagem do usuário na tela
         adicionarMensagem(texto);
         inputMsg.value = "";
 
-        // Mostra que está "escrevendo..."
         adicionarMensagem("O Amigo Fiel está pensando...");
 
         try {
-            // Aqui fazemos a chamada segura para o seu servidor
             const response = await fetch(URL_DO_SERVIDOR_SEGURO, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -243,8 +240,6 @@
             });
 
             const data = await response.json();
-            
-            // Remove o "pensando..." e coloca a resposta real
             chatWindow.lastElementChild.innerText = data.resposta;
         } catch (error) {
             chatWindow.lastElementChild.innerText = "Desculpe, tive um problema para me conectar. Mas ainda estou aqui para te ouvir.";
