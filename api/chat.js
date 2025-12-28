@@ -8,8 +8,8 @@ module.exports = async (req, res) => {
     const { mensagem } = req.body;
     const apiKey = process.env.GEMINI_API_KEY;
 
-    // Tentativa com o modelo "gemini-pro" na versão v1 estável (já que a v1beta está falhando)
-    const response = await fetch(`https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent?key=${apiKey}`, {
+    // Este é o endereço exato que o Google libera após o status "Ativadas" aparecer
+    const response = await fetch(`https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -20,19 +20,17 @@ module.exports = async (req, res) => {
     const data = await response.json();
 
     if (data.error) {
-      // Se falhar, tentamos o ID absoluto que costuma destravar contas novas
-      const retry = await fetch(`https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash-latest:generateContent?key=${apiKey}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ contents: [{ parts: [{ text: mensagem }] }] })
-      });
-      const retryData = await retry.json();
-      if (retryData.error) throw new Error(retryData.error.message);
-      return res.status(200).json({ resposta: retryData.candidates[0].content.parts[0].text });
+      throw new Error(data.error.message);
     }
 
-    res.status(200).json({ resposta: data.candidates[0].content.parts[0].text });
+    if (!data.candidates || data.candidates.length === 0) {
+      throw new Error("O Google recebeu a mensagem mas não gerou resposta. Tente novamente.");
+    }
+
+    const textoResposta = data.candidates[0].content.parts[0].text;
+    res.status(200).json({ resposta: textoResposta });
+
   } catch (error) {
-    res.status(500).json({ resposta: "Sincronizando com o Google... Tente novamente em 1 min: " + error.message });
+    res.status(500).json({ resposta: "Quase lá! O Google está terminando de liberar: " + error.message });
   }
 };
