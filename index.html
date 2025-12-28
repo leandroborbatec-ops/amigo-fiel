@@ -2,276 +2,74 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SOS - Amigo Fiel</title>
     <style>
-        :root {
-            --azul-fundo: #e3f2fd;
-            --azul-primario: #2196f3;
-            --branco: #ffffff;
-            --urgente: #ff0000;
-            --texto: #333;
-        }
-
-        * { box-sizing: border-box; }
-
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Arial, sans-serif;
-            background-color: var(--azul-fundo);
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-        }
-
-        .header {
-            background-color: var(--azul-primario);
-            color: white;
-            padding: 10px 15px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        .logo { font-weight: bold; font-size: 1rem; }
-
-        .btn-cvv-topo {
-            background-color: var(--urgente);
-            color: white;
-            border: none;
-            padding: 5px 10px;
-            border-radius: 8px;
-            text-decoration: none;
-            text-align: center;
-        }
-        .btn-cvv-topo b { display: block; font-size: 11px; }
-        .btn-cvv-topo span { font-size: 8px; display: block; }
-
-        #chat-window {
-            flex: 1;
-            padding: 15px;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            padding-bottom: 230px; 
-            overflow-y: auto;
-        }
-
-        .msg {
-            max-width: 85%;
-            padding: 12px;
-            border-radius: 15px;
-            font-size: 16px;
-            background: var(--branco);
-            color: var(--texto);
-            border-bottom-left-radius: 2px;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
-        }
-
-        .msg-destaque {
-            border-left: 5px solid var(--urgente);
-            background: #fff5f5;
-        }
-
-        .card-contato {
-            background: #f9f9f9;
-            border: 1px solid #ddd;
-            border-radius: 10px;
-            padding: 10px;
-            margin-top: 5px;
-            font-size: 14px;
-        }
-
-        .info-label { font-weight: bold; color: var(--azul-primario); }
-
-        .btn-ligar {
-            display: inline-block;
-            margin-top: 8px;
-            padding: 6px 12px;
-            background-color: #4caf50;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-            font-weight: bold;
-            font-size: 12px;
-        }
-
-        .footer-fixo {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: var(--branco);
-            padding: 10px 10px 25px 10px; 
-            border-top: 1px solid #ccc;
-            z-index: 200;
-        }
-
-        .button-row {
-            display: flex;
-            flex-direction: column; 
-            gap: 8px;
-            margin-bottom: 12px;
-        }
-
-        .btn-action {
-            width: 100%;
-            padding: 14px 10px;
-            border: none;
-            background-color: var(--azul-primario);
-            color: var(--branco);
-            border-radius: 20px;
-            font-weight: bold;
-            font-size: 13px;
-            cursor: pointer;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.15);
-        }
-
-        .input-container {
-            display: flex;
-            gap: 8px;
-            align-items: center;
-        }
-
-        .input-group {
-            flex: 1;
-            display: flex;
-            background: #f0f0f0;
-            border-radius: 25px;
-            padding: 5px 15px;
-            border: 1px solid #ddd;
-        }
-
-        input {
-            flex: 1;
-            border: none;
-            background: none;
-            padding: 8px;
-            font-size: 16px;
-            outline: none;
-        }
-
-        .btn-enviar {
-            background-color: var(--azul-primario);
-            color: white;
-            border: none;
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-        }
-
-        .seta-enviar {
-            width: 0; height: 0; 
-            border-top: 8px solid transparent;
-            border-bottom: 8px solid transparent;
-            border-left: 12px solid white;
-            margin-left: 4px;
-        }
+        /* Estilos básicos para o chat */
+        body { font-family: Arial, sans-serif; background-color: #f0f2f5; margin: 0; display: flex; flex-direction: column; height: 100vh; }
+        #chat-container { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 10px; }
+        .mensagem { padding: 10px 15px; border-radius: 15px; max-width: 80%; word-wrap: break-word; }
+        .user { align-self: flex-end; background-color: #0084ff; color: white; }
+        .bot { align-self: flex-start; background-color: white; color: #333; border: 1px solid #ddd; }
+        #input-area { padding: 20px; background: white; display: flex; gap: 10px; border-top: 1px solid #ddd; }
+        input { flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 20px; outline: none; }
+        button { background-color: #0084ff; color: white; border: none; padding: 10px 20px; border-radius: 20px; cursor: pointer; }
     </style>
 </head>
 <body>
 
-<div class="header">
-    <div class="logo">SOS - Amigo Fiel</div>
-    <a href="tel:188" class="btn-cvv-topo">
-        <b>AJUDA AGORA</b>
-        <span>Centro de Valorização da Vida</span>
-    </a>
-</div>
-
-<div id="chat-window">
-    <div class="msg">
-        Olá! Eu sou o seu Amigo Fiel. Sei que às vezes o peso da vida parece grande demais, mas eu estou aqui para te ouvir. Como está o seu coração hoje?
+    <div id="chat-container">
+        <div class="mensagem bot">Olá! Eu sou o Amigo Fiel. Estou aqui para te ouvir, sem julgamentos. Como você está se sentindo hoje?</div>
     </div>
-</div>
 
-<div class="footer-fixo">
-    <div class="button-row">
-        <button class="btn-action" onclick="mostrarContatos('apoio')">Posso te direcionar para uma igreja? Temos pequenos grupos</button>
-        <button class="btn-action" onclick="mostrarContatos('psicologo')">Psicólogo (Particular)</button>
+    <div id="input-area">
+        <input type="text" id="user-input" placeholder="Desabafe aqui..." onkeypress="if(event.key === 'Enter') enviar()">
+        <button onclick="enviar()">Enviar</button>
     </div>
-    <div class="input-container">
-        <div class="input-group">
-            <input type="text" id="user-msg" placeholder="Escreva aqui..." onkeypress="if(event.key === 'Enter') enviarMensagemParaIA()">
-        </div>
-        <button class="btn-enviar" onclick="enviarMensagemParaIA()">
-            <div class="seta-enviar"></div>
-        </button>
-    </div>
-</div>
 
-<script>
-    const chatWindow = document.getElementById('chat-window');
-    const inputMsg = document.getElementById('user-msg');
-    
-    // AJUSTADO: Agora aponta corretamente para a sua API na Vercel
-    const URL_DO_SERVIDOR_SEGURO = "/api/chat";
+    <script>
+        const chatContainer = document.getElementById('chat-container');
+        const userInput = document.getElementById('user-input');
 
-    function adicionarMensagem(texto, destaque = false) {
-        const div = document.createElement('div');
-        div.className = destaque ? "msg msg-destaque" : "msg";
-        div.innerText = texto;
-        chatWindow.appendChild(div);
-        chatWindow.scrollTop = chatWindow.scrollHeight;
-    }
-
-    async function enviarMensagemParaIA() {
-        const texto = inputMsg.value.trim();
-        if(!texto) return;
-
-        adicionarMensagem(texto);
-        inputMsg.value = "";
-
-        adicionarMensagem("O Amigo Fiel está pensando...");
-
-        try {
-            const response = await fetch(URL_DO_SERVIDOR_SEGURO, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ mensagem: texto })
-            });
-
-            const data = await response.json();
-            chatWindow.lastElementChild.innerText = data.resposta;
-        } catch (error) {
-            chatWindow.lastElementChild.innerText = "Desculpe, tive um problema para me conectar. Mas ainda estou aqui para te ouvir.";
+        // FUNÇÃO CHAVE: Faz a tela subir sozinha quando chega mensagem nova
+        function scrollToBottom() {
+            chatContainer.scrollTop = chatContainer.scrollHeight;
         }
-    }
 
-    function mostrarContatos(tipo) {
-        if(tipo === 'apoio') {
-            adicionarMensagem("Nossos pequenos grupos são famílias de fé. Aqui está o contato:");
-            adicionarCard("Líder João (Grupo Esperança)", "(11) 99999-0000", "contato@igreja.com.br");
-        } else {
-            adicionarMensagem("Temos profissionais parceiros prontos para te acompanhar:");
-            adicionarCard("Dr. Roberto (Psicólogo)", "(11) 97777-2222", "roberto@email.com");
-            adicionarMensagem("Lembrando: para apoio gratuito 24h, ligue 188 (CVV).", true);
+        async function enviar() {
+            const texto = userInput.value.trim();
+            if (!texto) return;
+
+            // Adiciona mensagem do usuário na tela
+            adicionarMensagem(texto, 'user');
+            userInput.value = '';
+            scrollToBottom(); // Sobe a tela
+
+            try {
+                // Chama sua API na Vercel
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ mensagem: texto })
+                });
+
+                const data = await response.json();
+                
+                // Adiciona resposta do Amigo Fiel
+                adicionarMensagem(data.resposta, 'bot');
+                scrollToBottom(); // Sobe a tela novamente para mostrar a resposta
+            } catch (error) {
+                adicionarMensagem("Desculpe, tive um problema na conexão. Pode repetir?", 'bot');
+                scrollToBottom();
+            }
         }
-    }
 
-    function adicionarCard(nome, telefone, email) {
-        const div = document.createElement('div');
-        div.className = "msg";
-        div.innerHTML = `
-            <div class="card-contato">
-                <span class="info-label">Nome:</span> ${nome}<br>
-                <span class="info-label">E-mail:</span> ${email}<br>
-                <span class="info-label">Tel:</span> ${telefone}<br>
-                <a href="tel:${telefone.replace(/\D/g,'')}" class="btn-ligar">LIGAR AGORA</a>
-            </div>
-        `;
-        chatWindow.appendChild(div);
-        chatWindow.scrollTop = chatWindow.scrollHeight;
-    }
-</script>
-
+        function adicionarMensagem(texto, autor) {
+            const div = document.createElement('div');
+            div.classList.add('mensagem', autor);
+            div.innerText = texto;
+            chatContainer.appendChild(div);
+        }
+    </script>
 </body>
 </html>
