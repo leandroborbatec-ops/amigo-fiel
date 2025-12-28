@@ -5,48 +5,72 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SOS - Amigo Fiel</title>
     <style>
-        /* Estilos básicos para o chat */
-        body { font-family: Arial, sans-serif; background-color: #f0f2f5; margin: 0; display: flex; flex-direction: column; height: 100vh; }
-        #chat-container { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 10px; }
-        .mensagem { padding: 10px 15px; border-radius: 15px; max-width: 80%; word-wrap: break-word; }
+        /* Layout preservado conforme suas imagens */
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f4f8; margin: 0; display: flex; flex-direction: column; height: 100vh; }
+        
+        .header { background-color: #0084ff; color: white; padding: 15px; display: flex; justify-content: space-between; align-items: center; font-weight: bold; position: sticky; top: 0; z-index: 100; }
+        .btn-ajuda { background-color: red; color: white; border: none; padding: 8px 12px; border-radius: 5px; font-size: 12px; font-weight: bold; cursor: pointer; }
+
+        #chat-container { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 12px; scroll-behavior: smooth; }
+        
+        .mensagem { padding: 12px 16px; border-radius: 18px; max-width: 85%; line-height: 1.4; font-size: 15px; }
+        .bot { align-self: flex-start; background-color: white; color: #333; border: 1px solid #e0e0e0; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
         .user { align-self: flex-end; background-color: #0084ff; color: white; }
-        .bot { align-self: flex-start; background-color: white; color: #333; border: 1px solid #ddd; }
-        #input-area { padding: 20px; background: white; display: flex; gap: 10px; border-top: 1px solid #ddd; }
-        input { flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 20px; outline: none; }
-        button { background-color: #0084ff; color: white; border: none; padding: 10px 20px; border-radius: 20px; cursor: pointer; }
+
+        .opcoes-container { display: flex; flex-direction: column; gap: 8px; padding: 10px 15px; }
+        .btn-opcao { background-color: #2196f3; color: white; border: none; padding: 12px; border-radius: 25px; font-weight: 500; cursor: pointer; text-align: center; }
+
+        .input-container { padding: 15px; background: #f0f4f8; display: flex; align-items: center; gap: 10px; }
+        input { flex: 1; padding: 12px 20px; border: 1px solid #ddd; border-radius: 30px; outline: none; background: white; }
+        .btn-enviar { background-color: #0084ff; color: white; border: none; width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; }
     </style>
 </head>
 <body>
 
-    <div id="chat-container">
-        <div class="mensagem bot">Olá! Eu sou o Amigo Fiel. Estou aqui para te ouvir, sem julgamentos. Como você está se sentindo hoje?</div>
+    <div class="header">
+        <span>SOS - Amigo Fiel</span>
+        <button class="btn-ajuda">AJUDA AGORA<br><small>Centro de Valorização da Vida</small></button>
     </div>
 
-    <div id="input-area">
-        <input type="text" id="user-input" placeholder="Desabafe aqui..." onkeypress="if(event.key === 'Enter') enviar()">
-        <button onclick="enviar()">Enviar</button>
+    <div id="chat-container">
+        <div class="mensagem bot">
+            Olá! Que bom que você veio. Eu sou o Amigo Fiel e estou aqui para ouvir, sem pressa e sem julgamento. 
+            Como você está se sentindo hoje? Se quiser, pode me contar o que está no seu coração.
+        </div>
+    </div>
+
+    <div class="opcoes-container">
+        <button class="btn-opcao" onclick="window.location.href='#'">Posso te direcionar para uma igreja? Temos pequenos grupos</button>
+        <button class="btn-opcao" onclick="window.location.href='#'">Psicólogo (Particular)</button>
+    </div>
+
+    <div class="input-container">
+        <input type="text" id="user-input" placeholder="Escreva aqui..." onkeypress="if(event.key === 'Enter') enviar()">
+        <button class="btn-enviar" onclick="enviar()">
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"></path></svg>
+        </button>
     </div>
 
     <script>
         const chatContainer = document.getElementById('chat-container');
         const userInput = document.getElementById('user-input');
 
-        // FUNÇÃO CHAVE: Faz a tela subir sozinha quando chega mensagem nova
-        function scrollToBottom() {
-            chatContainer.scrollTop = chatContainer.scrollHeight;
+        // FUNÇÃO QUE FAZ AS LETRAS SUBIREM SOZINHAS
+        function rolarParaBaixo() {
+            setTimeout(() => {
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+            }, 100);
         }
 
         async function enviar() {
             const texto = userInput.value.trim();
             if (!texto) return;
 
-            // Adiciona mensagem do usuário na tela
             adicionarMensagem(texto, 'user');
             userInput.value = '';
-            scrollToBottom(); // Sobe a tela
+            rolarParaBaixo();
 
             try {
-                // Chama sua API na Vercel
                 const response = await fetch('/api/chat', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -54,13 +78,11 @@
                 });
 
                 const data = await response.json();
-                
-                // Adiciona resposta do Amigo Fiel
                 adicionarMensagem(data.resposta, 'bot');
-                scrollToBottom(); // Sobe a tela novamente para mostrar a resposta
+                rolarParaBaixo();
             } catch (error) {
-                adicionarMensagem("Desculpe, tive um problema na conexão. Pode repetir?", 'bot');
-                scrollToBottom();
+                adicionarMensagem("Estou aqui te ouvindo. Pode repetir o que disse?", 'bot');
+                rolarParaBaixo();
             }
         }
 
