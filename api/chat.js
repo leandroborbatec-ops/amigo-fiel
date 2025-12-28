@@ -8,8 +8,8 @@ module.exports = async (req, res) => {
     const { mensagem } = req.body;
     const apiKey = process.env.GEMINI_API_KEY;
 
-    // Esta é a URL exata para contas novas com a API recém-ativada
-    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${apiKey}`, {
+    // Usando o ID técnico completo que é ativado por padrão no Google Cloud
+    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-001:generateContent?key=${apiKey}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -27,6 +27,6 @@ module.exports = async (req, res) => {
     res.status(200).json({ resposta: textoResposta });
 
   } catch (error) {
-    res.status(500).json({ resposta: "Google processando ativação: " + error.message });
+    res.status(500).json({ resposta: "Google finalizando ativação... Tente em instantes: " + error.message });
   }
 };
