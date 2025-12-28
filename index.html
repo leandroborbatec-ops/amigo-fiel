@@ -5,35 +5,37 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>SOS - Amigo Fiel</title>
 
-    <link rel="manifest" href="/manifest.json">
-    <meta name="theme-color" content="#0084ff">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-
     <style>
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f2f5; margin: 0; display: flex; flex-direction: column; height: 100vh; }
+        
+        /* Cabeçalho com CVV e Nome do App */
         .header { background-color: #0084ff; color: white; padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
         .header-title { font-size: 18px; font-weight: bold; }
         .btn-ajuda-container { display: flex; flex-direction: column; align-items: flex-end; }
         .btn-ajuda { background-color: #ff0000; color: white; border: none; padding: 8px 15px; border-radius: 5px; font-weight: bold; cursor: pointer; font-size: 11px; text-align: center; line-height: 1.2; }
         .cvv-text { font-size: 9px; color: white; margin-top: 2px; text-align: right; }
         
+        /* Área do Chat */
         #chat-container { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 10px; }
         .message { max-width: 85%; padding: 12px; border-radius: 15px; line-height: 1.4; font-size: 16px; position: relative; }
         .bot { background-color: white; align-self: flex-start; border-bottom-left-radius: 2px; color: #333; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
         .user { background-color: #0084ff; color: white; align-self: flex-end; border-bottom-right-radius: 2px; }
         
+        /* Estilo dos Botões de Opção (Azul e Arredondado) */
+        .opcoes-container { padding: 10px 20px; display: flex; flex-direction: column; gap: 8px; }
+        .btn-opcao { background-color: #0084ff; color: white; border: none; padding: 15px; border-radius: 30px; cursor: pointer; text-align: center; font-size: 14px; font-weight: 500; box-shadow: 0 2px 4px rgba(0,0,0,0.1); width: 100%; }
+        
+        /* Card da Célula */
         .card-celula { background: #e7f3ff; border: 1px solid #0084ff; border-radius: 10px; padding: 15px; margin-top: 10px; color: #333; font-size: 14px; }
         .card-celula strong { color: #0084ff; display: block; margin-bottom: 5px; font-size: 16px; }
         .btn-whatsapp { display: inline-block; background-color: #25d366; color: white !important; text-decoration: none; padding: 10px 15px; border-radius: 20px; font-weight: bold; margin-top: 10px; text-align: center; }
 
-        .opcoes-container { padding: 10px 20px; display: flex; flex-direction: column; gap: 8px; }
-        .btn-opcao { background-color: #0084ff; color: white; border: none; padding: 15px; border-radius: 30px; cursor: pointer; text-align: center; font-size: 14px; font-weight: 500; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        
-        .input-area { padding: 15px; background: white; display: flex; gap: 10px; border-top: 1px solid #ddd; }
+        /* Área de Input */
+        .input-area { padding: 15px; background: white; display: flex; gap: 10px; border-top: 1px solid #ddd; align-items: center; }
         input { flex: 1; padding: 12px; border: 1px solid #ddd; border-radius: 25px; outline: none; }
-        .btn-send { background: #0084ff; color: white; border: none; width: 45px; height: 45px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .btn-send { background: #0084ff; color: white; border: none; width: 45px; height: 45px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 18px; }
         
+        /* Rodapé Ético e Doação */
         .footer-info { font-size: 10px; color: #888; text-align: center; padding: 15px; background: white; }
         .btn-doar { background: #28a745; color: white; border: none; padding: 8px 20px; border-radius: 20px; font-size: 12px; margin-top: 8px; cursor: pointer; font-weight: bold; }
     </style>
@@ -64,7 +66,7 @@
 
     <div class="footer-info">
         Apoio bíblico Batista. Este serviço não substitui psicólogos ou médicos.<br>
-        <button class="btn-doar" onclick="alert('Obrigado! Em breve você poderá contribuir para mantermos este projeto vivo.')">❤ Manter este projeto vivo</button>
+        <button class="btn-doar" onclick="alert('Obrigado! Em breve você poderá contribuir.')">❤ Manter este projeto vivo</button>
     </div>
 
     <script>
@@ -118,9 +120,19 @@
             userInput.value = '';
             adicionarMensagem(texto, 'user');
 
-            setTimeout(() => {
+            try {
+                // Linha que comunica com a sua IA
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ mensagem: texto })
+                });
+                const data = await response.json();
+                adicionarMensagem(data.resposta, 'bot');
+            } catch (e) {
+                // Caso o servidor de IA esteja desligado ou falhe
                 adicionarMensagem("Entendo... pode falar mais sobre isso, estou ouvindo você.", 'bot');
-            }, 1000);
+            }
         }
 
         function enviarOpcao(texto) {
@@ -136,7 +148,7 @@
                             📱 WhatsApp: (00) 00000-0000<br>
                             📧 E-mail: contato@igreja.com.br
                             <p><small>Entre em contato ou envie um e-mail, em breve retornaremos para você!</small></p>
-                            <a href="https://wa.me/5500000000000?text=Olá!%20Vi%20o%20Amigo%20Fiel%20e%20gostaria%20de%20saber%20mais%20sobre%20as%20células." class="btn-whatsapp">➤ Falar pelo WhatsApp</a>
+                            <a href="https://wa.me/5500000000000?text=Olá!%20Gostaria%20de%20conhecer%20uma%20célula." class="btn-whatsapp">➤ Falar pelo WhatsApp</a>
                         </div>
                     `;
                     adicionarMensagem("Que demais! As células são o melhor lugar para caminhar em comunhão. Aqui está o contato do nosso líder:", 'bot', card);
