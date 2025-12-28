@@ -7,10 +7,12 @@
   "theme_color": "#0084ff",
   "icons": [
     {
-      "src": "amigofiel.png",
+      "src": "/amigofiel.png",
       "sizes": "512x512",
+      "purpose": "any maskable",
       "type": "image/png"
     }
   ]
 
 }
+
