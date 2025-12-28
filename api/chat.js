@@ -8,8 +8,8 @@ module.exports = async (req, res) => {
     const { mensagem } = req.body;
     const apiKey = process.env.GEMINI_API_KEY;
 
-    // A combinação v1beta + gemini-1.5-flash é a única que não dá erro 404 em chaves novas
-    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+    // Usando gemini-1.0-pro, que é o modelo com maior compatibilidade para chaves v1beta
+    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.0-pro:generateContent?key=${apiKey}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -27,6 +27,6 @@ module.exports = async (req, res) => {
     res.status(200).json({ resposta: textoResposta });
 
   } catch (error) {
-    res.status(500).json({ resposta: "Erro de acesso: " + error.message });
+    res.status(500).json({ resposta: "Erro de sistema: " + error.message });
   }
 };
