@@ -5,28 +5,30 @@ module.exports = async (req, res) => {
   if (req.method === 'OPTIONS') return res.status(200).end();
 
   try {
-    const { mensagem } = req.body;
     const apiKey = process.env.GEMINI_API_KEY;
-
-    // Usando o ID técnico completo que é ativado por padrão no Google Cloud
-    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-001:generateContent?key=${apiKey}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        contents: [{ parts: [{ text: mensagem }] }]
-      })
-    });
-
+    // Pede ao Google a lista de modelos que VOCÊ pode usar
+    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`);
     const data = await response.json();
 
-    if (data.error) {
-      throw new Error(data.error.message);
-    }
+    if (data.error) throw new Error(data.error.message);
 
-    const textoResposta = data.candidates[0].content.parts[0].text;
-    res.status(200).json({ resposta: textoResposta });
+    // Pega o nome do primeiro modelo disponível para você
+    const modeloDisponivel = data.models.find(m => m.supportedGenerationMethods.includes("generateContent"));
+    
+    if (!modeloDisponivel) throw new Error("Nenhum modelo disponível para esta chave ainda.");
+
+    const { mensagem } = req.body;
+    // Faz a pergunta usando o modelo que o Google ACABOU de dizer que funciona
+    const chatResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/${modeloDisponivel.name}:generateContent?key=${apiKey}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ contents: [{ parts: [{ text: mensagem }] }] })
+    });
+
+    const chatData = await chatResponse.json();
+    res.status(200).json({ resposta: chatData.candidates[0].content.parts[0].text });
 
   } catch (error) {
-    res.status(500).json({ resposta: "Google finalizando ativação... Tente em instantes: " + error.message });
+    res.status(500).json({ resposta: "O Google ainda está processando sua ativação. Tente em 10 minutos. Erro: " + error.message });
   }
 };
