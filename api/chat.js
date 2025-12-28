@@ -8,8 +8,8 @@ module.exports = async (req, res) => {
     const { mensagem } = req.body;
     const apiKey = process.env.GEMINI_API_KEY;
 
-    // Usando gemini-1.0-pro, que é o modelo com maior compatibilidade para chaves v1beta
-    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.0-pro:generateContent?key=${apiKey}`, {
+    // Agora que a API está ATIVADA, este link v1beta com gemini-1.5-flash vai funcionar
+    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -18,15 +18,10 @@ module.exports = async (req, res) => {
     });
 
     const data = await response.json();
+    if (data.error) throw new Error(data.error.message);
 
-    if (data.error) {
-      throw new Error(data.error.message);
-    }
-
-    const textoResposta = data.candidates[0].content.parts[0].text;
-    res.status(200).json({ resposta: textoResposta });
-
+    res.status(200).json({ resposta: data.candidates[0].content.parts[0].text });
   } catch (error) {
-    res.status(500).json({ resposta: "Erro de sistema: " + error.message });
+    res.status(500).json({ resposta: "Aguardando propagação: " + error.message });
   }
 };
