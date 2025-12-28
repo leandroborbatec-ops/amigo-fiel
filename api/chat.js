@@ -1,5 +1,3 @@
-const { GoogleGenerativeAI } = require("@google/generative-ai");
-
 module.exports = async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
@@ -8,15 +6,25 @@ module.exports = async (req, res) => {
 
   try {
     const { mensagem } = req.body;
-    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-    
-    // Nome do modelo atualizado para compatibilidade máxima
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" });
+    const apiKey = process.env.GEMINI_API_KEY;
 
-    const result = await model.generateContent(mensagem);
-    const response = await result.response;
-    
-    res.status(200).json({ resposta: response.text() });
+    // Chamada direta via fetch para a versão estável v1
+    const response = await fetch(`https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        contents: [{ parts: [{ text: mensagem }] }]
+      })
+    });
+
+    const data = await response.json();
+
+    if (data.error) {
+      throw new Error(data.error.message);
+    }
+
+    const textoResposta = data.candidates[0].content.parts[0].text;
+    res.status(200).json({ resposta: textoResposta });
   } catch (error) {
     res.status(500).json({ resposta: "Erro na API: " + error.message });
   }
