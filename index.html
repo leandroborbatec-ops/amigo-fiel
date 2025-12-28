@@ -9,101 +9,142 @@
     <meta name="theme-color" content="#0084ff">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link rel="apple-touch-icon" href="amigofiel.png">
 
     <style>
-        /* Layout original preservado conforme imagens */
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f4f8; margin: 0; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f2f5; margin: 0; display: flex; flex-direction: column; height: 100vh; }
+        .header { background-color: #0084ff; color: white; padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .header-title { font-size: 18px; font-weight: bold; }
+        .btn-ajuda-container { display: flex; flex-direction: column; align-items: flex-end; }
+        .btn-ajuda { background-color: #ff0000; color: white; border: none; padding: 8px 15px; border-radius: 5px; font-weight: bold; cursor: pointer; font-size: 11px; text-align: center; line-height: 1.2; }
+        .cvv-text { font-size: 9px; color: white; margin-top: 2px; text-align: right; }
         
-        .header { background-color: #0084ff; color: white; padding: 15px; display: flex; justify-content: space-between; align-items: center; font-weight: bold; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        .btn-ajuda { background-color: red; color: white; border: none; padding: 8px 12px; border-radius: 5px; font-size: 11px; font-weight: bold; cursor: pointer; line-height: 1.2; text-align: center; }
-
-        #chat-container { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 12px; scroll-behavior: smooth; }
+        #chat-container { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 10px; }
+        .message { max-width: 85%; padding: 12px; border-radius: 15px; line-height: 1.4; font-size: 16px; position: relative; }
+        .bot { background-color: white; align-self: flex-start; border-bottom-left-radius: 2px; color: #333; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
+        .user { background-color: #0084ff; color: white; align-self: flex-end; border-bottom-right-radius: 2px; }
         
-        .mensagem { padding: 12px 16px; border-radius: 18px; max-width: 85%; line-height: 1.4; font-size: 15px; word-wrap: break-word; }
-        .bot { align-self: flex-start; background-color: white; color: #333; border: 1px solid #e0e0e0; box-shadow: 0 2px 4px rgba(0,0,0,0.05); border-bottom-left-radius: 2px; }
-        .user { align-self: flex-end; background-color: #0084ff; color: white; border-bottom-right-radius: 2px; }
+        .card-celula { background: #e7f3ff; border: 1px solid #0084ff; border-radius: 10px; padding: 15px; margin-top: 10px; color: #333; font-size: 14px; }
+        .card-celula strong { color: #0084ff; display: block; margin-bottom: 5px; font-size: 16px; }
+        .btn-whatsapp { display: inline-block; background-color: #25d366; color: white !important; text-decoration: none; padding: 10px 15px; border-radius: 20px; font-weight: bold; margin-top: 10px; text-align: center; }
 
-        .opcoes-container { display: flex; flex-direction: column; gap: 8px; padding: 10px 15px; background: #f0f4f8; }
-        .btn-opcao { background-color: #2196f3; color: white; border: none; padding: 12px; border-radius: 25px; font-weight: 500; cursor: pointer; text-align: center; font-size: 14px; }
-
-        .input-container { padding: 15px; background: white; display: flex; align-items: center; gap: 10px; border-top: 1px solid #eee; }
-        input { flex: 1; padding: 12px 20px; border: 1px solid #ddd; border-radius: 30px; outline: none; font-size: 16px; }
-        .btn-enviar { background-color: #0084ff; color: white; border: none; width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+        .opcoes-container { padding: 10px 20px; display: flex; flex-direction: column; gap: 8px; }
+        .btn-opcao { background-color: #0084ff; color: white; border: none; padding: 15px; border-radius: 30px; cursor: pointer; text-align: center; font-size: 14px; font-weight: 500; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        
+        .input-area { padding: 15px; background: white; display: flex; gap: 10px; border-top: 1px solid #ddd; }
+        input { flex: 1; padding: 12px; border: 1px solid #ddd; border-radius: 25px; outline: none; }
+        .btn-send { background: #0084ff; color: white; border: none; width: 45px; height: 45px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        
+        .footer-info { font-size: 10px; color: #888; text-align: center; padding: 15px; background: white; }
+        .btn-doar { background: #28a745; color: white; border: none; padding: 8px 20px; border-radius: 20px; font-size: 12px; margin-top: 8px; cursor: pointer; font-weight: bold; }
     </style>
 </head>
 <body>
 
     <div class="header">
-        <span>SOS - Amigo Fiel</span>
-        <button class="btn-ajuda" onclick="window.open('https://cvv.org.br/', '_blank')">AJUDA AGORA<br>Centro de Valorização da Vida</button>
-    </div>
-
-    <div id="chat-container">
-        <div class="mensagem bot">
-            Olá! Que bom que você veio. Eu sou o Amigo Fiel e estou aqui para ouvir, sem pressa e sem julgamento. 
-            Como você está se sentindo hoje?
+        <div class="header-title">SOS - Amigo Fiel</div>
+        <div class="btn-ajuda-container">
+            <button class="btn-ajuda" onclick="window.location.href='tel:188'">AJUDA AGORA<br>Ligar CVV 188</button>
+            <div class="cvv-text">Centro de Valorização da Vida</div>
         </div>
     </div>
 
-    <div class="opcoes-container">
-        <button class="btn-opcao">Posso te direcionar para uma igreja? Temos pequenos grupos</button>
-        <button class="btn-opcao">Psicólogo (Particular)</button>
+    <div id="chat-container">
+        <div class="message bot">Olá! Eu sou o Amigo Fiel. Estou aqui para te ouvir sem julgamentos. Como você está se sentindo hoje? Pode desabafar...</div>
     </div>
 
-    <div class="input-container">
-        <input type="text" id="user-input" placeholder="Escreva aqui..." autocomplete="off">
-        <button class="btn-enviar" id="send-btn">
-            <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"></path></svg>
-        </button>
+    <div class="opcoes-container">
+        <button class="btn-opcao" onclick="enviarOpcao('Gostaria de conhecer uma célula?')">Gostaria de conhecer uma célula?</button>
+        <button class="btn-opcao" onclick="enviarOpcao('Preciso de um conselho bíblico agora')">Preciso de um conselho bíblico agora</button>
+    </div>
+
+    <div class="input-area">
+        <input type="text" id="user-input" placeholder="Escreva aqui...">
+        <button class="btn-send" onclick="enviarMensagem()">➤</button>
+    </div>
+
+    <div class="footer-info">
+        Apoio bíblico Batista. Este serviço não substitui psicólogos ou médicos.<br>
+        <button class="btn-doar" onclick="alert('Obrigado! Em breve você poderá contribuir para mantermos este projeto vivo.')">❤ Manter este projeto vivo</button>
     </div>
 
     <script>
         const chatContainer = document.getElementById('chat-container');
         const userInput = document.getElementById('user-input');
-        const sendBtn = document.getElementById('send-btn');
 
-        // FUNÇÃO DE ROLAGEM AUTOMÁTICA
-        function scrollToBottom() {
-            setTimeout(() => {
-                chatContainer.scrollTop = chatContainer.scrollHeight;
-            }, 50);
+        const caixaDePromessas = [
+            "Lançando sobre ele toda a vossa ansiedade, porque ele tem cuidado de vós. (1 Pedro 5:7)",
+            "O Senhor é o meu pastor, nada me faltará. (Salmos 23:1)",
+            "Não temas, porque eu sou contigo. (Isaías 41:10)",
+            "Tudo posso naquele que me fortalece. (Filipenses 4:13)",
+            "O Senhor está perto dos que têm o coração quebrantado. (Salmos 34:18)",
+            "O choro pode durar uma noite, mas a alegria vem pela manhã. (Salmos 30:5)",
+            "Se Deus é por nós, quem será contra nós? (Romanos 8:31)",
+            "A minha graça te basta, porque o meu poder se aperfeiçoa na fraqueza. (2 Coríntios 12:9)",
+            "Entrega o teu caminho ao Senhor; confia nele, e ele tudo fará. (Salmos 37:5)",
+            "Espera no Senhor, anima-te, e ele fortalecerá o teu coração. (Salmos 27:14)",
+            "Pois eu bem sei os planos que tenho para vocês... dar esperança e um futuro. (Jeremias 29:11)",
+            "O Senhor é bom, um refúgio em tempos de angústia. (Naum 1:7)",
+            "Aquietai-vos, e sabei que eu sou Deus. (Salmos 46:10)",
+            "Deus é nosso refúgio e fortaleza, socorro bem presente na angústia. (Salmos 46:1)",
+            "O Senhor te guardará de todo o mal; ele guardará a tua alma. (Salmos 121:7)",
+            "A paz de Deus, que excede todo entendimento, guardará seu coração. (Filipenses 4:7)",
+            "O nome do Senhor é uma torre forte; os justos correm para ela e estão seguros. (Provérbios 18:10)",
+            "Deixo-vos a paz, a minha paz vos dou. (João 14:27)",
+            "Sê forte e corajoso; não temas, nem te espantes. (Josué 1:9)",
+            "Confia no Senhor de todo o teu coração. (Provérbios 3:5)",
+            "Mil cairão ao teu lado, mas não chegará a ti. (Salmos 91:7)",
+            "Não andeis ansiosos por coisa alguma. (Filipenses 4:6)",
+            "Eis que estou convosco todos os dias. (Mateus 28:20)",
+            "O Senhor é a minha luz e a minha salvação; de quem terei medo? (Salmos 27:1)",
+            "Alegrai-vos na esperança, sede pacientes na tribulação. (Romanos 12:12)",
+            "Mas os que esperam no Senhor renovarão as suas forças. (Isaías 40:31)",
+            "Peçam, e lhes será dado; busquem, e encontrarão. (Mateus 7:7)",
+            "Ninguém despreze a tua mocidade; mas sê o exemplo dos fiéis. (1 Timóteo 4:12)",
+            "Escondi a tua palavra no meu coração. (Salmos 119:11)",
+            "Deus é fiel; ele não deixará que vocês sejam tentados além do que suportam. (1 Coríntios 10:13)"
+        ];
+
+        function adicionarMensagem(texto, remetente, htmlExtra = "") {
+            const div = document.createElement('div');
+            div.className = `message ${remetente}`;
+            div.innerHTML = texto + htmlExtra;
+            chatContainer.appendChild(div);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
         }
 
-        async function enviar() {
+        async function enviarMensagem() {
             const texto = userInput.value.trim();
             if (!texto) return;
-
-            adicionarMensagem(texto, 'user');
             userInput.value = '';
-            scrollToBottom();
+            adicionarMensagem(texto, 'user');
 
-            try {
-                const response = await fetch('/api/chat', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ mensagem: texto })
-                });
-
-                const data = await response.json();
-                adicionarMensagem(data.resposta, 'bot');
-                scrollToBottom();
-            } catch (error) {
-                adicionarMensagem("Estou aqui com você. Pode repetir?", 'bot');
-                scrollToBottom();
-            }
+            setTimeout(() => {
+                adicionarMensagem("Entendo... pode falar mais sobre isso, estou ouvindo você.", 'bot');
+            }, 1000);
         }
 
-        function adicionarMensagem(texto, autor) {
-            const div = document.createElement('div');
-            div.classList.add('mensagem', autor);
-            div.innerText = texto;
-            chatContainer.appendChild(div);
+        function enviarOpcao(texto) {
+            adicionarMensagem(texto, 'user');
+            setTimeout(() => {
+                if(texto.includes('conselho')) {
+                    const sorteado = caixaDePromessas[Math.floor(Math.random() * caixaDePromessas.length)];
+                    adicionarMensagem(`Receba essa linda mensagem para alegrar o seu dia: \n\n"${sorteado}"`, 'bot');
+                } else if(texto.includes('célula')) {
+                    const card = `
+                        <div class="card-celula">
+                            <strong>Líder Responsável: Missionário João</strong>
+                            📱 WhatsApp: (00) 00000-0000<br>
+                            📧 E-mail: contato@igreja.com.br
+                            <p><small>Entre em contato ou envie um e-mail, em breve retornaremos para você!</small></p>
+                            <a href="https://wa.me/5500000000000?text=Olá!%20Vi%20o%20Amigo%20Fiel%20e%20gostaria%20de%20saber%20mais%20sobre%20as%20células." class="btn-whatsapp">➤ Falar pelo WhatsApp</a>
+                        </div>
+                    `;
+                    adicionarMensagem("Que demais! As células são o melhor lugar para caminhar em comunhão. Aqui está o contato do nosso líder:", 'bot', card);
+                }
+            }, 800);
         }
 
-        sendBtn.addEventListener('click', enviar);
-        userInput.addEventListener('keypress', (e) => { if(e.key === 'Enter') enviar(); });
+        userInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') enviarMensagem(); });
     </script>
 </body>
 </html>
-
