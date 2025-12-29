@@ -15,8 +15,10 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         body { background-color: #f0f2f5; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
         
+        /* Header com descrição completa do CVV */
         .header { background-color: #0084ff; color: white; padding: 15px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        .btn-ajuda-agora { background-color: #ff0000; color: white; border: none; padding: 8px 12px; border-radius: 5px; font-weight: bold; font-size: 11px; text-decoration: none; text-align: center; line-height: 1.2; }
+        .btn-ajuda-agora { background-color: #ff0000; color: white; border: none; padding: 8px 12px; border-radius: 5px; font-weight: bold; font-size: 13px; text-decoration: none; text-align: center; line-height: 1.2; }
+        .cvv-legenda { font-size: 9px; margin-top: 3px; color: #fff; opacity: 0.9; text-align: right; font-weight: normal; }
         
         #chat-container { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 15px; }
         .mensagem { max-width: 85%; padding: 12px 16px; border-radius: 20px; font-size: 15px; line-height: 1.4; position: relative; animation: fadeIn 0.3s ease; }
@@ -44,7 +46,10 @@
 
     <div class="header">
         <div><h2 style="font-size: 18px;">SOS - Amigo Fiel</h2></div>
-        <a href="tel:188" class="btn-ajuda-agora">AJUDA AGORA<br><span style="font-size: 9px;">Ligar CVV 188</span></a>
+        <div style="display: flex; flex-direction: column; align-items: flex-end;">
+            <a href="tel:188" class="btn-ajuda-agora">AJUDA AGORA<br><span style="font-size: 10px; font-weight: normal;">Ligar CVV 188</span></a>
+            <span class="cvv-legenda">Centro de Valorização da Vida</span>
+        </div>
     </div>
 
     <div id="chat-container">
@@ -74,7 +79,7 @@
             </button>
         </div>
         <p class="disclaimer">Apoio bíblico Batista. Este serviço não substitui psicólogos ou médicos.</p>
-        <a href="SEU_LINK_AQUI" target="_blank" class="btn-doar">❤ Manter este projeto vivo</a>
+        <a href="SEU_LINK_DE_DOACAO" target="_blank" class="btn-doar">❤ Manter este projeto vivo</a>
     </div>
 
     <script>
@@ -115,12 +120,10 @@
                     body: JSON.stringify({ mensagem: mensagemUsuario })
                 });
                 
-                if (!response.ok) throw new Error();
-
                 const data = await response.json();
                 adicionarMensagem(data.resposta, 'bot');
             } catch (e) {
-                adicionarMensagem("Estou aqui ouvindo você. Verifique sua conexão ou créditos e tente enviar novamente.", "bot");
+                adicionarMensagem("Estou aqui ouvindo você. Tente enviar sua mensagem novamente ou ajude a manter o projeto vivo com créditos.", "bot");
             }
         }
     </script>
