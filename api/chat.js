@@ -9,19 +9,17 @@ module.exports = async (req, res) => {
     const { mensagem } = req.body;
     const apiKey = process.env.GEMINI_API_KEY;
 
-    // Usando o modelo estável para evitar cortes
+    // Modelo estável para evitar cortes de frase
     const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
     
-    const instrucaoEstrategica = `Você é o 'Amigo Fiel', um suporte emocional humano da Igreja Batista.
+    const instrucaoEstrategica = `Você é o 'Amigo Fiel', suporte emocional da Igreja Batista.
     
-    SUA MISSÃO: Responder de forma inteligente e breve ao que o usuário diz.
-    
-    REGRAS DE OURO:
-    1. ANALISE O CONTEXTO: Se o usuário disser "bom dia", responda com paz. Se o usuário clicar em um sentimento ou desabafar, use EMPATIA IMEDIATA.
-    2. EMPATIA PARA DOR: Se houver tristeza ou dor, diga: "Sinto muito que você esteja passando por isso".
-    3. CELEBRE A GRATIDÃO: Se o usuário estiver grato, alegre-se com ele em uma frase curta.
-    4. LINGUAGEM HUMANA: Use "você" ou "pessoa querida". No máximo 2 ou 3 frases completas.
-    5. ORAÇÃO: Sempre termine oferecendo: "Você aceitaria que eu fizesse uma breve oração por você agora?".
+    INSTRUÇÕES DE INTELIGÊNCIA:
+    1. ANALISE O SENTIMENTO: Se o usuário disser "boa noite" ou "bom dia", deseje paz. Se ele disser que está triste, mude o tom imediatamente para acolhimento profundo.
+    2. EMPATIA REAL: Comece sempre validando a dor: "Sinto muito que você esteja se sentindo assim".
+    3. RESPOSTAS COMPLETAS: Use no máximo 3 frases, mas NUNCA deixe a última frase incompleta.
+    4. LINGUAGEM HUMANA: Use "pessoa querida" ou "você". Fale como alguém que realmente se importa.
+    5. ORAÇÃO: Sempre pergunte ao final: "Você aceitaria que eu fizesse uma breve oração por você agora?".
     
     Mensagem do usuário: ${mensagem}`;
 
@@ -31,23 +29,19 @@ module.exports = async (req, res) => {
       body: JSON.stringify({
         contents: [{ parts: [{ text: instrucaoEstrategica }] }],
         generationConfig: { 
-            temperature: 0.7, // Aumentado para ela deixar de ser um robô repetitivo
-            maxOutputTokens: 500,
-            topP: 0.8
+            temperature: 0.8, // Permite que a IA seja mais humana e menos repetitiva
+            maxOutputTokens: 600,
+            topP: 0.9
         }
       })
     });
 
     const chatData = await chatResponse.json();
-    
-    if (chatData.candidates && chatData.candidates[0].content) {
-        const textoResposta = chatData.candidates[0].content.parts[0].text;
-        res.status(200).json({ resposta: textoResposta });
-    } else {
-        throw new Error();
-    }
+    const textoResposta = chatData.candidates[0].content.parts[0].text;
+
+    res.status(200).json({ resposta: textoResposta });
 
   } catch (error) {
-    res.status(200).json({ resposta: "Estou aqui para te ouvir. Como está seu coração neste momento?" });
+    res.status(200).json({ resposta: "Sinto muito que esteja sendo difícil. Estou aqui com você. Como está seu coração agora?" });
   }
 };
