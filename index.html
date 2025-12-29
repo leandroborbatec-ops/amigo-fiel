@@ -13,7 +13,7 @@
 
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background-color: #f0f2f5; display: flex; flex-direction: column; height: 100vh; }
+        body { background-color: #f0f2f5; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
         
         /* Header e Botão de Emergência */
         .header { background-color: #0084ff; color: white; padding: 15px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
@@ -27,7 +27,7 @@
         .bot { background-color: white; align-self: flex-start; border-bottom-left-radius: 2px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); color: #333; }
         .user { background-color: #0084ff; color: white; align-self: flex-end; border-bottom-right-radius: 2px; }
 
-        /* Container de Opções e Emojis */
+        /* Container de Emojis e Opções */
         .sentimentos-container { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 15px; justify-content: center; }
         .opcoes-container { display: flex; flex-direction: column; gap: 10px; padding: 0 20px; margin-bottom: 10px; }
         
@@ -63,11 +63,11 @@
             <br><br><b>Como você está se sentindo hoje? Pode desabafar...</b>
             
             <div class="sentimentos-container">
-                <button class="btn-emoji" onclick="enviarSentimento('😊', 'Bem (Gratidão)')">😊 Bem</button>
-                <button class="btn-emoji" onclick="enviarSentimento('😐', 'Normal')">😐 Normal</button>
-                <button class="btn-emoji" onclick="enviarSentimento('😔', 'Triste')">😔 Triste</button>
-                <button class="btn-emoji" onclick="enviarSentimento('😰', 'Ansioso')">😰 Ansioso</button>
-                <button class="btn-emoji" onclick="enviarSentimento('😡', 'Bravo')">😡 Bravo</button>
+                <button class="btn-emoji" onclick="enviarSentimento('😊', 'Estou me sentindo bem e grato a Deus hoje.')">😊 Bem</button>
+                <button class="btn-emoji" onclick="enviarSentimento('😐', 'Estou me sentindo normal, apenas quero conversar.')">😐 Normal</button>
+                <button class="btn-emoji" onclick="enviarSentimento('😔', 'Estou me sentindo triste e precisando de consolo.')">😔 Triste</button>
+                <button class="btn-emoji" onclick="enviarSentimento('😰', 'Estou me sentindo muito ansioso e com o coração apertado.')">😰 Ansioso</button>
+                <button class="btn-emoji" onclick="enviarSentimento('😡', 'Estou me sentindo bravo e com muita raiva de algo.')">😡 Bravo</button>
             </div>
         </div>
     </div>
@@ -86,7 +86,7 @@
         </div>
         
         <p class="disclaimer">Apoio bíblico Batista. Este serviço não substitui psicólogos ou médicos.</p>
-        <button class="btn-doar" onclick="window.open('SEU_LINK_DE_DOACAO', '_blank')">❤ Manter este projeto vivo</button>
+        <button class="btn-doar" onclick="window.open('SEU_LINK_DE_PIX_OU_DOACAO', '_blank')">❤ Manter este projeto vivo</button>
     </div>
 
     <script>
@@ -109,9 +109,10 @@
             if (event.key === 'Enter') enviarMensagem();
         }
 
-        function enviarSentimento(emoji, texto) {
-            adicionarMensagem(emoji + " " + texto, 'user');
-            processarRespostaIA(texto);
+        function enviarSentimento(emoji, textoCompleto) {
+            // Mostra apenas o emoji e uma versão curta no chat para o usuário
+            adicionarMensagem(emoji + " " + textoCompleto, 'user');
+            processarRespostaIA(textoCompleto);
         }
 
         function enviarOpcao(texto) {
@@ -128,7 +129,6 @@
         }
 
         async function processarRespostaIA(mensagemUsuario) {
-            // Aqui você conecta com sua API da Vercel /api/chat
             try {
                 const response = await fetch('/api/chat', {
                     method: 'POST',
@@ -138,7 +138,7 @@
                 const data = await response.json();
                 adicionarMensagem(data.resposta, 'bot');
             } catch (e) {
-                adicionarMensagem("Estou em oração por você. No momento meu sistema está processando muitos pedidos, mas Deus te ouve.", "bot");
+                adicionarMensagem("Estou processando seu desabafo com carinho. Minha conexão está lenta, mas já te respondo biblicamente.", "bot");
             }
         }
     </script>
