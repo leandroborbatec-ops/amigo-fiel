@@ -13,15 +13,13 @@ module.exports = async (req, res) => {
     const dataModels = await responseModels.json();
     const modeloDisponivel = dataModels.models.find(m => m.supportedGenerationMethods.includes("generateContent"));
     
-    // INSTRUÇÃO REFORMULADA PARA EVITAR CORTES
-    const instrucaoEstrategica = `Você é o 'Amigo Fiel', um suporte emocional humano e breve.
-    DIRETRIZES:
-    1. Responda em no máximo 2 ou 3 frases completas.
-    2. Nunca termine uma frase pela metade.
-    3. Se o usuário der apenas um "bom dia", responda de forma calorosa e curta, perguntando como está o coração dele.
-    4. Mantenha o tom de acolhimento da Bíblia evangélica nvi, mas de forma muito suave.
+    const instrucaoEstrategica = `Você é o 'Amigo Fiel', um suporte emocional.
+    REGRAS DE RESPOSTA:
+    1. Seja extremamente breve. Responda com no máximo 20 palavras.
+    2. NUNCA corte a frase no meio. Termine sempre com um ponto final.
+    3. Se o usuário disser "bom dia", responda apenas: "Bom dia! Que a graça e a paz do Senhor estejam com você. Como está seu coração?"
     
-    Usuário: ${mensagem}`;
+    Mensagem: ${mensagem}`;
 
     const chatResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/${modeloDisponivel.name}:generateContent?key=${apiKey}`, {
       method: 'POST',
@@ -30,8 +28,8 @@ module.exports = async (req, res) => {
         contents: [{ parts: [{ text: instrucaoEstrategica }] }],
         generationConfig: { 
             temperature: 0.7,
-            maxOutputTokens: 400, // Aumentamos aqui para que a frase não seja cortada no meio
-            topP: 0.9 
+            maxOutputTokens: 800, // Aumentamos o limite para garantir que a frase termine
+            topP: 0.8
         }
       })
     });
@@ -42,6 +40,6 @@ module.exports = async (req, res) => {
     res.status(200).json({ resposta: textoResposta });
 
   } catch (error) {
-    res.status(200).json({ resposta: "Bom dia! Estou aqui para te ouvir. Como você está se sentindo hoje?" });
+    res.status(200).json({ resposta: "Bom dia! A paz do Senhor. Como você se sente hoje?" });
   }
 };
