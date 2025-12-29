@@ -19,7 +19,7 @@ module.exports = async (req, res) => {
     const modeloDisponivel = dataModels.models.find(m => m.supportedGenerationMethods.includes("generateContent"));
     
     // Instrução curta para economizar processamento
-    const instrucao = `Você é o Amigo Fiel SOS, suporte da Igreja Batista. Use linguagem neutra e bíblica. Responda com empatia a isto: ${mensagem}`;
+    const instrucao = `Você é o Amigo Fiel SOS. Use linguagem neutra e bíblica. Responda com empatia a isto: ${mensagem}`;
 
     const chatResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/${modeloDisponivel.name}:generateContent?key=${apiKey}`, {
       method: 'POST',
