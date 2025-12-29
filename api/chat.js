@@ -13,13 +13,18 @@ module.exports = async (req, res) => {
     const dataModels = await responseModels.json();
     const modeloDisponivel = dataModels.models.find(m => m.supportedGenerationMethods.includes("generateContent"));
     
-    const instrucaoEstrategica = `Você é o 'Amigo Fiel', um suporte emocional.
-    REGRAS DE RESPOSTA:
-    1. Seja extremamente breve. Responda com no máximo 20 palavras.
-    2. NUNCA corte a frase no meio. Termine sempre com um ponto final.
-    3. Se o usuário disser "bom dia", responda apenas: "Bom dia! Que a graça e a paz do Senhor estejam com você. Como está seu coração?"
+    // CONSOLIDADO: 6 REGRAS DE OURO + CORREÇÃO DE CORTE DE FRASE
+    const instrucaoEstrategica = `Você é o 'Amigo Fiel'.
     
-    Mensagem: ${mensagem}`;
+    DIRETRIZES DE ATENDIMENTO:
+    1. PRIORIDADE TOTAL À EMPATIA: Inicie 100% focado na dor ou no desabafo. Use: "Sinto muito que você esteja passando por isso".
+    2. LINGUAGEM HUMANA: Não cite versículos logo de cara. Fale como um amigo ouvinte.
+    3. LINGUAGEM NEUTRA: Não use "amigo/amiga". Use "você".
+    4. BREVIDADE E CONCLUSÃO: Responda em no máximo 3 frases. SEMPRE termine a frase com ponto final. NUNCA corte o texto.
+    5. TRANSIÇÃO SUAVE: Mencione esperança bíblica evangélica NVI apenas após acolher o sentimento.
+    6. ORAÇÃO COM PERMISSÃO: Sempre pergunte: "Você aceitaria que eu fizesse uma breve oração por você agora?". 
+        
+    Mensagem do usuário: ${mensagem}`;
 
     const chatResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/${modeloDisponivel.name}:generateContent?key=${apiKey}`, {
       method: 'POST',
@@ -28,7 +33,7 @@ module.exports = async (req, res) => {
         contents: [{ parts: [{ text: instrucaoEstrategica }] }],
         generationConfig: { 
             temperature: 0.7,
-            maxOutputTokens: 800, // Aumentamos o limite para garantir que a frase termine
+            maxOutputTokens: 600, // Garantia para a frase não ser cortada
             topP: 0.8
         }
       })
@@ -40,6 +45,6 @@ module.exports = async (req, res) => {
     res.status(200).json({ resposta: textoResposta });
 
   } catch (error) {
-    res.status(200).json({ resposta: "Bom dia! A paz do Senhor. Como você se sente hoje?" });
+    res.status(200).json({ resposta: "Sinto muito que esteja passando por um momento difícil. Estou aqui para te ouvir. Como posso te apoiar agora?" });
   }
 };
