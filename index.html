@@ -12,13 +12,13 @@
     <link rel="apple-touch-icon" href="amigofiel.png">
 
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, sans-serif; }
         body { background-color: #f0f2f5; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
         
-        /* Header com descrição completa do CVV */
+        /* Header Restaurado com CVV Completo */
         .header { background-color: #0084ff; color: white; padding: 15px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
         .btn-ajuda-agora { background-color: #ff0000; color: white; border: none; padding: 8px 12px; border-radius: 5px; font-weight: bold; font-size: 13px; text-decoration: none; text-align: center; line-height: 1.2; }
-        .cvv-legenda { font-size: 9px; margin-top: 3px; color: #fff; opacity: 0.9; text-align: right; font-weight: normal; }
+        .cvv-legenda { font-size: 9px; margin-top: 3px; color: #fff; opacity: 0.9; text-align: right; }
         
         #chat-container { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 15px; }
         .mensagem { max-width: 85%; padding: 12px 16px; border-radius: 20px; font-size: 15px; line-height: 1.4; position: relative; animation: fadeIn 0.3s ease; }
@@ -28,17 +28,22 @@
         .user { background-color: #0084ff; color: white; align-self: flex-end; border-bottom-right-radius: 2px; }
 
         .sentimentos-container { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 15px; justify-content: center; }
-        .opcoes-container { display: flex; flex-direction: column; gap: 10px; padding: 0 20px; margin-bottom: 10px; }
-        
         .btn-emoji { background: #f8f9fa; border: 1px solid #dee2e6; padding: 8px 12px; border-radius: 15px; cursor: pointer; font-size: 14px; }
+
+        .opcoes-container { display: flex; flex-direction: column; gap: 10px; padding: 0 20px; margin-bottom: 10px; }
         .btn-opcao { background-color: #0084ff; color: white; border: none; padding: 12px; border-radius: 25px; font-weight: 500; cursor: pointer; width: 100%; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
 
+        /* Estilo do Formulário de Contato */
+        .form-contato { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; width: 100%; }
+        .form-contato input { padding: 10px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; width: 100%; }
+        .btn-whats { background-color: #25D366; color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; margin-top: 5px; }
+
         .footer-container { background: white; padding: 10px; border-top: 1px solid #eee; }
-        .input-area { display: flex; gap: 10px; align-items: center; max-width: 600px; margin: 0 auto; padding-bottom: 5px; }
-        input { flex: 1; padding: 12px; border: 1px solid #ddd; border-radius: 25px; outline: none; font-size: 16px; }
+        .input-area { display: flex; gap: 10px; align-items: center; max-width: 600px; margin: 0 auto; }
+        input#userInput { flex: 1; padding: 12px; border: 1px solid #ddd; border-radius: 25px; outline: none; font-size: 16px; }
         .btn-enviar { background-color: #0084ff; border: none; width: 45px; height: 45px; border-radius: 50%; color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; }
         
-        .disclaimer { font-size: 10px; color: #888; text-align: center; padding: 5px 10px; line-height: 1.2; }
+        .disclaimer { font-size: 10px; color: #888; text-align: center; padding: 5px 10px; }
         .btn-doar { background-color: #28a745; color: white; border: none; padding: 8px 20px; border-radius: 20px; font-size: 13px; font-weight: bold; margin: 5px auto; display: block; cursor: pointer; text-decoration: none; text-align: center; width: fit-content; }
     </style>
 </head>
@@ -57,18 +62,18 @@
             Que alegria ter sua presença aqui. Eu sou o Amigo Fiel e estou disponível para te ouvir. 
             <br><br><b>Como está seu coração hoje?</b>
             <div class="sentimentos-container">
-                <button class="btn-emoji" onclick="enviarSentimento('😊', 'Sinto muita gratidão hoje.')">😊 Gratidão</button>
-                <button class="btn-emoji" onclick="enviarSentimento('😐', 'Sinto que meu dia está normal.')">😐 Normal</button>
-                <button class="btn-emoji" onclick="enviarSentimento('😔', 'Sinto muita tristeza e preciso de consolo.')">😔 Tristeza</button>
-                <button class="btn-emoji" onclick="enviarSentimento('😰', 'Sinto muita ansiedade agora.')">😰 Ansiedade</button>
-                <button class="btn-emoji" onclick="enviarSentimento('😡', 'Sinto muita raiva de algo que aconteceu.')">😡 Raiva</button>
+                <button class="btn-emoji" onclick="enviarSentimento('😊', 'Gratidão')">😊 Gratidão</button>
+                <button class="btn-emoji" onclick="enviarSentimento('😐', 'Normal')">😐 Normal</button>
+                <button class="btn-emoji" onclick="enviarSentimento('😔', 'Tristeza')">😔 Tristeza</button>
+                <button class="btn-emoji" onclick="enviarSentimento('😰', 'Ansiedade')">😰 Ansiedade</button>
+                <button class="btn-emoji" onclick="enviarSentimento('😡', 'Raiva')">😡 Raiva</button>
             </div>
         </div>
     </div>
 
     <div class="opcoes-container">
-        <button class="btn-opcao" onclick="enviarOpcao('Gostaria de conhecer uma célula?')">Gostaria de conhecer uma célula?</button>
-        <button class="btn-opcao" onclick="enviarOpcao('Preciso de um conselho bíblico agora')">Preciso de um conselho bíblico agora</button>
+        <button class="btn-opcao" onclick="mostrarFormulario()">Quero conhecer uma célula / Falar com voluntário</button>
+        <button class="btn-opcao" onclick="darVersiculo()">Preciso de um conselho bíblico agora (Versículo)</button>
     </div>
 
     <div class="footer-container">
@@ -79,51 +84,102 @@
             </button>
         </div>
         <p class="disclaimer">Apoio bíblico Batista. Este serviço não substitui psicólogos ou médicos.</p>
-        <a href="SEU_LINK_DE_DOACAO" target="_blank" class="btn-doar">❤ Manter este projeto vivo</a>
+        <a href="SEU_PIX_AQUI" target="_blank" class="btn-doar">❤ Manter este projeto vivo</a>
     </div>
 
     <script>
         const chatContainer = document.getElementById('chat-container');
         const userInput = document.getElementById('userInput');
 
-        function adicionarMensagem(texto, tipo) {
+        // Lista de 30 Versículos da Bíblia Batista para consolo rápido
+        const versiculos = [
+            "Filipenses 4:13: Tudo posso naquele que me fortalece.",
+            "Salmos 23:1: O Senhor é o meu pastor; nada me faltará.",
+            "Mateus 11:28: Vinde a mim, todos os que estais cansados e oprimidos.",
+            "João 14:27: Deixo-vos a paz, a minha paz vos dou.",
+            "Salmos 46:1: Deus é o nosso refúgio e fortaleza.",
+            "Isaías 41:10: Não temas, porque eu sou contigo.",
+            "1 Pedro 5:7: Lançando sobre ele toda a vossa ansiedade.",
+            "Romanos 8:28: Todas as coisas cooperam para o bem daqueles que amam a Deus.",
+            "Josué 1:9: Seja forte e corajoso! O Senhor teu Deus estará contigo.",
+            "Jeremias 29:11: Eu conheço os planos que tenho para vós, diz o Senhor.",
+            "Salmos 34:18: Perto está o Senhor dos que têm o coração quebrantado.",
+            "João 16:33: No mundo tereis aflições, mas tende bom ânimo; eu venci o mundo.",
+            "Salmos 121:1: Elevo os meus olhos para os montes; de onde vem o meu socorro?",
+            "Provérbios 3:5: Confia no Senhor de todo o teu coração.",
+            "Lamentações 3:22: As misericórdias do Senhor são a causa de não sermos consumidos.",
+            "Salmos 55:22: Entregue as suas preocupações ao Senhor, e ele o susterá.",
+            "2 Coríntios 12:9: A minha graça te basta, pois o meu poder se aperfeiçoa na fraqueza.",
+            "Salmos 27:1: O Senhor é a minha luz e a minha salvação; a quem temerei?",
+            "Isaías 40:31: Mas os que esperam no Senhor renovarão as suas forças.",
+            "Efésios 3:20: Àquele que é capaz de fazer infinitamente mais do que pedimos.",
+            "Salmos 37:5: Entrega o teu caminho ao Senhor; confia nele, e ele tudo fará.",
+            "Naum 1:7: O Senhor é bom, uma fortaleza no dia da angústia.",
+            "Hebreus 13:5: Nunca te deixarei, nunca te abandonarei.",
+            "Salmos 91:1: Aquele que habita no esconderijo do Altíssimo.",
+            "João 8:12: Eu sou a luz do mundo; quem me segue não andará em trevas.",
+            "Salmos 119:105: Lâmpada para os meus pés é tua palavra.",
+            "Apocalipse 21:4: Ele enxugará dos seus olhos toda lágrima.",
+            "Salmos 147:3: Ele cura os que têm o coração quebrantado.",
+            "Neemias 8:10: A alegria do Senhor é a vossa força.",
+            "Romanos 15:13: O Deus da esperança os encha de toda alegria e paz."
+        ];
+
+        function adicionarMensagem(texto, tipo, isHTML = false) {
             const div = document.createElement('div');
             div.className = `mensagem ${tipo}`;
-            div.innerText = texto;
+            if (isHTML) div.innerHTML = texto; else div.innerText = texto;
             chatContainer.appendChild(div);
             chatContainer.scrollTop = chatContainer.scrollHeight;
         }
 
-        function enviarSentimento(emoji, texto) {
-            adicionarMensagem(emoji + " " + texto, 'user');
-            processarRespostaIA(texto);
+        function darVersiculo() {
+            const v = versiculos[Math.floor(Math.random() * versiculos.length)];
+            adicionarMensagem("Preciso de um conselho bíblico agora.", "user");
+            setTimeout(() => adicionarMensagem(`Pessoa querida, receba esta palavra: <br><br><b>${v}</b>`, "bot", true), 600);
         }
 
-        function enviarOpcao(texto) {
-            adicionarMensagem(texto, 'user');
-            processarRespostaIA(texto);
+        function mostrarFormulario() {
+            adicionarMensagem("Quero conhecer uma célula.", "user");
+            const html = `
+                Deixe seus dados para um de nossos voluntários entrar em contato com você:
+                <div class="form-contato">
+                    <input type="text" placeholder="Seu nome">
+                    <input type="tel" placeholder="WhatsApp (DDD + Número)">
+                    <input type="email" placeholder="Seu e-mail">
+                    <a href="https://wa.me/55SEUNUMERO" target="_blank" class="btn-whats">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" width="20" alt="whats"> 
+                        Falar agora no WhatsApp
+                    </a>
+                </div>
+            `;
+            setTimeout(() => adicionarMensagem(html, "bot", true), 600);
+        }
+
+        function enviarSentimento(emoji, texto) {
+            adicionarMensagem(`${emoji} Sinto muita ${texto.toLowerCase()} hoje.`, 'user');
+            processarIA(texto);
         }
 
         function enviarMensagem() {
             const texto = userInput.value.trim();
-            if (texto === "") return;
+            if (!texto) return;
             adicionarMensagem(texto, 'user');
             userInput.value = "";
-            processarRespostaIA(texto);
+            processarIA(texto);
         }
 
-        async function processarRespostaIA(mensagemUsuario) {
+        async function processarIA(msg) {
             try {
-                const response = await fetch('/api/chat', {
+                const res = await fetch('/api/chat', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ mensagem: mensagemUsuario })
+                    body: JSON.stringify({ mensagem: msg })
                 });
-                
-                const data = await response.json();
+                const data = await res.json();
                 adicionarMensagem(data.resposta, 'bot');
             } catch (e) {
-                adicionarMensagem("Estou aqui ouvindo você. Tente enviar sua mensagem novamente ou ajude a manter o projeto vivo com créditos.", "bot");
+                adicionarMensagem("Estou aqui para você. Tente enviar novamente.", "bot");
             }
         }
     </script>
