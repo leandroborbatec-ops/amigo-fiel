@@ -9,19 +9,20 @@ module.exports = async (req, res) => {
     const { mensagem } = req.body;
     const apiKey = process.env.GEMINI_API_KEY;
 
-    // Modelo estável para evitar cortes de frase
+    // Fixamos o modelo 1.5-flash que é o mais rápido e estável para evitar as frases cortadas que você viu anteriormente
     const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
     
-    const instrucaoEstrategica = `Você é o 'Amigo Fiel', suporte emocional da Igreja Batista.
+    const instrucaoEstrategica = `Você é o 'Amigo Fiel', um suporte emocional humano da Igreja Batista.
     
-    INSTRUÇÕES DE INTELIGÊNCIA:
-    1. ANALISE O SENTIMENTO: Se o usuário disser "boa noite" ou "bom dia", deseje paz. Se ele disser que está triste, mude o tom imediatamente para acolhimento profundo.
-    2. EMPATIA REAL: Comece sempre validando a dor: "Sinto muito que você esteja se sentindo assim".
-    3. RESPOSTAS COMPLETAS: Use no máximo 3 frases, mas NUNCA deixe a última frase incompleta.
-    4. LINGUAGEM HUMANA: Use "pessoa querida" ou "você". Fale como alguém que realmente se importa.
-    5. ORAÇÃO: Sempre pergunte ao final: "Você aceitaria que eu fizesse uma breve oração por você agora?".
+    SUA MISSÃO: Ouvir com o coração e responder de forma curta e acolhedora.
     
-    Mensagem do usuário: ${mensagem}`;
+    DIRETRIZES DE OURO:
+    1. CONTEXTO REAL: Se o usuário disser "bom dia" ou "boa noite", responda de forma calorosa. Se ele expressar dor ou clicar em um sentimento, mude o tom para acolhimento profundo imediatamente.
+    2. EMPATIA SEMPRE: Comece validando o que a pessoa sente. Ex: "Sinto muito por esse peso no seu coração" ou "Que bom te ver por aqui hoje".
+    3. LINGUAGEM HUMANA: Use "você" ou "pessoa querida". Escreva no máximo 3 frases completas. NUNCA corte o texto no meio de uma palavra.
+    4. ESPERANÇA: Após acolher, ofereça uma palavra de esperança leve e pergunte: "Você aceitaria que eu fizesse uma breve oração por você agora?".
+    
+    Mensagem do usuário para responder: ${mensagem}`;
 
     const chatResponse = await fetch(url, {
       method: 'POST',
@@ -29,19 +30,26 @@ module.exports = async (req, res) => {
       body: JSON.stringify({
         contents: [{ parts: [{ text: instrucaoEstrategica }] }],
         generationConfig: { 
-            temperature: 0.8, // Permite que a IA seja mais humana e menos repetitiva
-            maxOutputTokens: 600,
+            temperature: 0.8, // Aumentado para a resposta ser menos "robô" e mais "amigo"
+            maxOutputTokens: 500, // Espaço de sobra para não haver cortes
             topP: 0.9
         }
       })
     });
 
     const chatData = await chatResponse.json();
-    const textoResposta = chatData.candidates[0].content.parts[0].text;
-
-    res.status(200).json({ resposta: textoResposta });
+    
+    if (chatData.candidates && chatData.candidates[0].content) {
+        const textoResposta = chatData.candidates[0].content.parts[0].text;
+        res.status(200).json({ resposta: textoResposta });
+    } else {
+        throw new Error("Erro na IA");
+    }
 
   } catch (error) {
-    res.status(200).json({ resposta: "Sinto muito que esteja sendo difícil. Estou aqui com você. Como está seu coração agora?" });
+    // Resposta de segurança mais humana se a conexão falhar
+    res.status(200).json({ 
+        resposta: "Pessoa querida, estou aqui com você. Meu sistema oscilou um pouco, mas meu coração continua pronto para te ouvir. Como você está se sentindo?" 
+    });
   }
 };
