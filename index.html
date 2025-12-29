@@ -14,60 +14,41 @@
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         body { background-color: #f0f2f5; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
-        
-        /* Header e Botão de Emergência */
         .header { background-color: #0084ff; color: white; padding: 15px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
         .btn-ajuda-agora { background-color: #ff0000; color: white; border: none; padding: 8px 12px; border-radius: 5px; font-weight: bold; font-size: 12px; text-decoration: none; text-align: center; line-height: 1.2; }
-        
-        /* Área de Chat */
         #chat-container { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 15px; }
         .mensagem { max-width: 85%; padding: 12px 16px; border-radius: 20px; font-size: 15px; line-height: 1.4; position: relative; animation: fadeIn 0.3s ease; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        
         .bot { background-color: white; align-self: flex-start; border-bottom-left-radius: 2px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); color: #333; }
         .user { background-color: #0084ff; color: white; align-self: flex-end; border-bottom-right-radius: 2px; }
-
-        /* Container de Emojis e Opções */
         .sentimentos-container { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 15px; justify-content: center; }
         .opcoes-container { display: flex; flex-direction: column; gap: 10px; padding: 0 20px; margin-bottom: 10px; }
-        
         .btn-emoji { background: #f8f9fa; border: 1px solid #dee2e6; padding: 8px 12px; border-radius: 15px; cursor: pointer; font-size: 14px; transition: 0.2s; }
-        .btn-emoji:active { background: #e2e6ea; transform: scale(0.95); }
-        
         .btn-opcao { background-color: #0084ff; color: white; border: none; padding: 12px; border-radius: 25px; font-weight: 500; cursor: pointer; width: 100%; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-
-        /* Rodapé: Input e Avisos */
         .footer-container { background: white; padding: 10px; border-top: 1px solid #eee; }
         .input-area { display: flex; gap: 10px; align-items: center; max-width: 600px; margin: 0 auto; padding-bottom: 5px; }
         input { flex: 1; padding: 12px; border: 1px solid #ddd; border-radius: 25px; outline: none; font-size: 16px; }
         .btn-enviar { background-color: #0084ff; border: none; width: 45px; height: 45px; border-radius: 50%; color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-        
         .disclaimer { font-size: 10px; color: #888; text-align: center; padding: 5px 10px; line-height: 1.2; }
         .btn-doar { background-color: #28a745; color: white; border: none; padding: 8px 20px; border-radius: 20px; font-size: 13px; font-weight: bold; margin: 5px auto; display: block; cursor: pointer; }
     </style>
 </head>
 <body>
-
     <div class="header">
-        <div>
-            <h2 style="font-size: 18px;">SOS - Amigo Fiel</h2>
-        </div>
-        <a href="tel:188" class="btn-ajuda-agora">
-            AJUDA AGORA<br><span style="font-size: 10px; font-weight: normal;">Ligar CVV 188</span>
-        </a>
+        <div><h2 style="font-size: 18px;">SOS - Amigo Fiel</h2></div>
+        <a href="tel:188" class="btn-ajuda-agora">AJUDA AGORA<br><span style="font-size: 10px; font-weight: normal;">Ligar CVV 188</span></a>
     </div>
 
     <div id="chat-container">
         <div class="mensagem bot">
-            Olá! Eu sou o Amigo Fiel. Estou aqui para te ouvir sem julgamentos. 
-            <br><br><b>Como você está se sentindo hoje? Pode desabafar...</b>
-            
+            Que alegria ter sua presença aqui. Eu sou o Amigo Fiel e estou disponível para te ouvir. 
+            <br><br><b>Como está seu coração hoje?</b>
             <div class="sentimentos-container">
-                <button class="btn-emoji" onclick="enviarSentimento('😊', 'Estou me sentindo bem e grato a Deus hoje.')">😊 Bem</button>
-                <button class="btn-emoji" onclick="enviarSentimento('😐', 'Estou me sentindo normal, apenas quero conversar.')">😐 Normal</button>
-                <button class="btn-emoji" onclick="enviarSentimento('😔', 'Estou me sentindo triste e precisando de consolo.')">😔 Triste</button>
-                <button class="btn-emoji" onclick="enviarSentimento('😰', 'Estou me sentindo muito ansioso e com o coração apertado.')">😰 Ansioso</button>
-                <button class="btn-emoji" onclick="enviarSentimento('😡', 'Estou me sentindo bravo e com muita raiva de algo.')">😡 Bravo</button>
+                <button class="btn-emoji" onclick="enviarSentimento('😊', 'Sinto muita gratidão hoje.')">😊 Gratidão</button>
+                <button class="btn-emoji" onclick="enviarSentimento('😐', 'Sinto que meu dia está normal.')">😐 Normal</button>
+                <button class="btn-emoji" onclick="enviarSentimento('😔', 'Sinto muita tristeza e preciso de consolo.')">😔 Tristeza</button>
+                <button class="btn-emoji" onclick="enviarSentimento('😰', 'Sinto muita ansiedade agora.')">😰 Ansiedade</button>
+                <button class="btn-emoji" onclick="enviarSentimento('😡', 'Sinto muita raiva de algo que aconteceu.')">😡 Raiva</button>
             </div>
         </div>
     </div>
@@ -84,15 +65,13 @@
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
             </button>
         </div>
-        
         <p class="disclaimer">Apoio bíblico Batista. Este serviço não substitui psicólogos ou médicos.</p>
-        <button class="btn-doar" onclick="window.open('SEU_LINK_DE_PIX_OU_DOACAO', '_blank')">❤ Manter este projeto vivo</button>
+        <button class="btn-doar" onclick="window.open('SEU_LINK_AQUI', '_blank')">❤ Manter este projeto vivo</button>
     </div>
 
     <script>
         const chatContainer = document.getElementById('chat-container');
         const userInput = document.getElementById('userInput');
-
         function adicionarMensagem(texto, tipo) {
             const div = document.createElement('div');
             div.className = `mensagem ${tipo}`;
@@ -100,26 +79,16 @@
             chatContainer.appendChild(div);
             scrollToBottom();
         }
-
-        function scrollToBottom() {
-            chatContainer.scrollTop = chatContainer.scrollHeight;
+        function scrollToBottom() { chatContainer.scrollTop = chatContainer.scrollHeight; }
+        function verificarEnter(event) { if (event.key === 'Enter') enviarMensagem(); }
+        function enviarSentimento(emoji, texto) {
+            adicionarMensagem(emoji + " " + texto, 'user');
+            processarRespostaIA(texto);
         }
-
-        function verificarEnter(event) {
-            if (event.key === 'Enter') enviarMensagem();
-        }
-
-        function enviarSentimento(emoji, textoCompleto) {
-            // Mostra apenas o emoji e uma versão curta no chat para o usuário
-            adicionarMensagem(emoji + " " + textoCompleto, 'user');
-            processarRespostaIA(textoCompleto);
-        }
-
         function enviarOpcao(texto) {
             adicionarMensagem(texto, 'user');
             processarRespostaIA(texto);
         }
-
         function enviarMensagem() {
             const texto = userInput.value.trim();
             if (texto === "") return;
@@ -127,7 +96,6 @@
             userInput.value = "";
             processarRespostaIA(texto);
         }
-
         async function processarRespostaIA(mensagemUsuario) {
             try {
                 const response = await fetch('/api/chat', {
@@ -138,7 +106,7 @@
                 const data = await response.json();
                 adicionarMensagem(data.resposta, 'bot');
             } catch (e) {
-                adicionarMensagem("Estou processando seu desabafo com carinho. Minha conexão está lenta, mas já te respondo biblicamente.", "bot");
+                adicionarMensagem("Estou em oração por você. No momento meu sistema está processando muitos pedidos, mas Deus te ouve.", "bot");
             }
         }
     </script>
