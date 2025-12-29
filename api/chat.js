@@ -1,39 +1,62 @@
-export default async function handler(req, res) {
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Método não permitido' });
-  }
+module.exports = async (req, res) => {
+  // Configurações de acesso (CORS)
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
-  const { mensagem } = req.body;
+  if (req.method === 'OPTIONS') return res.status(200).end();
 
   try {
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+    const { mensagem } = req.body;
+    const apiKey = process.env.GEMINI_API_KEY;
+
+    // 1. Busca automática de modelos
+    const responseModels = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`);
+    const dataModels = await responseModels.json();
+
+    if (dataModels.error) throw new Error(dataModels.error.message);
+
+    const modeloDisponivel = dataModels.models.find(m => m.supportedGenerationMethods.includes("generateContent"));
+    
+    if (!modeloDisponivel) throw new Error("Nenhum modelo disponível no momento.");
+
+    // 2. Instrução Estratégica Atualizada (Fiel à Bíblia Batista e Gênero Neutro)
+    const instrucaoEstrategica = `Você é o 'Amigo Fiel', um suporte emocional empático baseado na Bíblia Batista.
+    DIRETRIZES DE CONVERSA:
+    - Use LINGUAGEM NEUTRA: Não use termos como 'amigo/amiga', 'bem-vindo/bem-vinda' ou adjetivos que definam gênero. Use 'Que bom ter sua presença', 'Pessoa querida', 'Você é especial'.
+    - Inicie focado 100% na dor do usuário. Se ele enviou um sentimento (como raiva, ansiedade, tristeza), valide isso sem julgamentos.
+    - Ofereça esperança baseada na teologia batista.
+    - Pergunte gentilmente: 'Eu costumo falar com Deus sobre o que sinto. Você aceitaria que eu fizesse uma breve oração por você agora, ou prefere apenas continuar conversando?'
+    - Lembre que você NÃO substitui um psicólogo.
+    - Se a pessoa disser que quer uma célula, incentive-a a procurar o grupo local.
+
+    Mensagem do Usuário: ${mensagem}`;
+
+    // 3. Chamada para o Chat Gemini
+    const chatResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/${modeloDisponivel.name}:generateContent?key=${apiKey}`, {
       method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
-        'Content-Type': 'application/json',
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        model: "gpt-4o-mini", // Modelo econômico para poupar créditos
-        messages: [
-          {
-            role: "system",
-            content: "Você é o 'Amigo Fiel', um conselheiro espiritual da Igreja Batista. Use a Bíblia Batista como base. IMPORTANTE: Use linguagem neutra para não errar o gênero (ex: use 'Que bom ter sua presença' em vez de 'Bem-vindo' ou 'Amigo'). Se o usuário disser que sente raiva, ansiedade ou tristeza, ofereça conforto bíblico sem julgamentos. Lembre sempre que você NÃO substitui um psicólogo."
-          },
-          { role: "user", content: mensagem }
-        ],
-        temperature: 0.7,
-      }),
+        contents: [{ parts: [{ text: instrucaoEstrategica }] }],
+        generationConfig: { temperature: 0.7 }
+      })
     });
 
-    const data = await response.json();
+    const chatData = await chatResponse.json();
     
-    // Verifica se a API retornou erro de créditos
-    if (data.error) {
-      return res.status(500).json({ resposta: "Estou em oração, mas meus créditos de IA acabaram. Ajude a manter o projeto vivo clicando no botão de doação abaixo." });
+    // Tratamento de erro de resposta da IA
+    if (!chatData.candidates || !chatData.candidates[0].content) {
+        throw new Error("Resposta da IA inválida.");
     }
 
-    res.status(200).json({ resposta: data.choices[0].message.content });
+    const textoResposta = chatData.candidates[0].content.parts[0].text;
+
+    res.status(200).json({ resposta: textoResposta });
+
   } catch (error) {
-    res.status(500).json({ resposta: "Houve um erro na conexão. Tente novamente em instantes." });
+    console.error("Erro no servidor:", error.message);
+    res.status(500).json({ 
+      resposta: "Estou aqui ouvindo você. Tente enviar sua mensagem novamente, ou ajude a manter o projeto vivo com créditos via doação." 
+    });
   }
-}
+};
