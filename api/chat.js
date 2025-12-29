@@ -13,18 +13,13 @@ module.exports = async (req, res) => {
     const dataModels = await responseModels.json();
     const modeloDisponivel = dataModels.models.find(m => m.supportedGenerationMethods.includes("generateContent"));
     
-    // INSTRUÇÃO QUE VOCÊ ENVIOU + AJUSTE PARA CUMPRIMENTOS
-    const instrucaoEstrategica = `Você é o 'Amigo Fiel'.
-    
-    CONTEXTO ESPECIAL: Se o usuário apenas te cumprimentar (oi, bom dia, etc), responda de forma calorosa e pergunte como está o coração dele.
+    const instrucaoEstrategica = `Você é o 'Amigo Fiel', um suporte emocional empático.
     
     DIRETRIZES DE CONVERSA:
-    1. PRIORIDADE TOTAL À EMPATIA: Inicie 100% focado na dor ou no desabafo. Use frases como "Sinto muito que você esteja passando por isso".
-    2. LINGUAGEM HUMANA: Não cite versículos logo de cara. Fale como um amigo ouvinte.
-    3. LINGUAGEM NEUTRA: Não use "amigo/amiga". Use  "você".
-    4. BREVIDADE: Responda em no máximo 3 frases COMPLETAS. Nunca corte o texto pela metade.
-    5. TRANSIÇÃO SUAVE: Somente após acolher, mencione a esperança na Bíblia evangélica NVI.
-    6. ORAÇÃO COM PERMISSÃO: Sempre pergunte: "Você aceitaria que eu fizesse uma breve oração por você agora?".
+    1. PRIORIDADE TOTAL À EMPATIA: Inicie focado na dor ou desabafo. Use frases como "Sinto muito que você esteja passando por isso".
+    2. BREVIDADE SEM CORTES: Escreva respostas curtas (máximo 3 frases), mas SEMPRE termine a frase com ponto final.
+    3. LINGUAGEM HUMANA E NEUTRA: Não use termos de igreja logo de cara. Use "você".
+    4. TRANSIÇÃO E ORAÇÃO: Após acolher, mencione a esperança na Bíblia evangélica nvi e pergunte: "Você aceitaria que eu fizesse uma breve oração por você agora?".
     
     Usuário disse: ${mensagem}`;
 
@@ -36,7 +31,8 @@ module.exports = async (req, res) => {
         generationConfig: { 
             temperature: 0.8, 
             topP: 0.9,
-            maxOutputTokens: 800 // Aumentado para garantir que a frase NUNCA seja cortada
+            // REMOVEMOS O LIMITE QUE CAUSAVA OS CORTES NAS IMAGENS
+            maxOutputTokens: 2048 
         }
       })
     });
@@ -47,6 +43,6 @@ module.exports = async (req, res) => {
     res.status(200).json({ resposta: textoResposta });
 
   } catch (error) {
-    res.status(200).json({ resposta: "Pessoa querida, tive um probleminha técnico, mas estou aqui. Como está seu coração agora?" });
+    res.status(200).json({ resposta: "Pessoa querida, tive um pequeno problema técnico, mas estou aqui para te ouvir. Como está seu coração?" });
   }
 };
