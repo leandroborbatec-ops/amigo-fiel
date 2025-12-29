@@ -9,47 +9,41 @@ module.exports = async (req, res) => {
     const { mensagem } = req.body;
     const apiKey = process.env.GEMINI_API_KEY;
 
-    // Fixamos o modelo 1.5-flash que é o mais rápido e estável para evitar as frases cortadas que você viu anteriormente
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+    const responseModels = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`);
+    const dataModels = await responseModels.json();
+    const modeloDisponivel = dataModels.models.find(m => m.supportedGenerationMethods.includes("generateContent"));
     
-    const instrucaoEstrategica = `Você é o 'Amigo Fiel', um suporte emocional humano da Igreja Batista.
+    // INSTRUÇÃO ESTRATÉGICA PARA CONVERSA SUAVE
+    const instrucaoEstrategica = `Você é o 'Amigo Fiel', um suporte emocional empático.
+    DIRETRIZES DE CONVERSA:
+    1. PRIORIDADE TOTAL À EMPATIA: Inicie 100% focado na dor ou no desabafo da pessoa. Use frases como "Sinto muito que você esteja passando por isso" ou "Deve ser muito difícil carregar esse peso".
+    2. LINGUAGEM HUMANA: Não cite versículos ou termos de igreja logo de cara, a menos que a pessoa peça. Fale como um amigo ouvinte.
+    3. LINGUAGEM NEUTRA: Não use "amigo/amiga" para não errar o gênero. Use "pessoa querida" ou "você".
+    4. TRANSIÇÃO SUAVE: Somente após acolher o sentimento, mencione que há uma esperança baseada na Bíblia Batista, mas de forma leve.
+    5. ORAÇÃO COM PERMISSÃO: Sempre pergunte antes de orar: "Eu costumo falar com Deus sobre o que sinto. Você aceitaria que eu fizesse uma breve oração por você agora, ou prefere apenas continuar conversando?".
+    6. SEM JULGAMENTOS: Este é um porto seguro.
     
-    SUA MISSÃO: Ouvir com o coração e responder de forma curta e acolhedora.
-    
-    DIRETRIZES DE OURO:
-    1. CONTEXTO REAL: Se o usuário disser "bom dia" ou "boa noite", responda de forma calorosa. Se ele expressar dor ou clicar em um sentimento, mude o tom para acolhimento profundo imediatamente.
-    2. EMPATIA SEMPRE: Comece validando o que a pessoa sente. Ex: "Sinto muito por esse peso no seu coração" ou "Que bom te ver por aqui hoje".
-    3. LINGUAGEM HUMANA: Use "você" ou "pessoa querida". Escreva no máximo 3 frases completas. NUNCA corte o texto no meio de uma palavra.
-    4. ESPERANÇA: Após acolher, ofereça uma palavra de esperança leve e pergunte: "Você aceitaria que eu fizesse uma breve oração por você agora?".
-    
-    Mensagem do usuário para responder: ${mensagem}`;
+    Usuário disse: ${mensagem}`;
 
-    const chatResponse = await fetch(url, {
+    const chatResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/${modeloDisponivel.name}:generateContent?key=${apiKey}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         contents: [{ parts: [{ text: instrucaoEstrategica }] }],
         generationConfig: { 
-            temperature: 0.8, // Aumentado para a resposta ser menos "robô" e mais "amigo"
-            maxOutputTokens: 500, // Espaço de sobra para não haver cortes
-            topP: 0.9
+            temperature: 0.8, // Aumentado para uma conversa mais variada e menos robótica
+            topP: 0.9 
         }
       })
     });
 
     const chatData = await chatResponse.json();
-    
-    if (chatData.candidates && chatData.candidates[0].content) {
-        const textoResposta = chatData.candidates[0].content.parts[0].text;
-        res.status(200).json({ resposta: textoResposta });
-    } else {
-        throw new Error("Erro na IA");
-    }
+    const textoResposta = chatData.candidates[0].content.parts[0].text;
+
+    res.status(200).json({ resposta: textoResposta });
 
   } catch (error) {
-    // Resposta de segurança mais humana se a conexão falhar
-    res.status(200).json({ 
-        resposta: "Pessoa querida, estou aqui com você. Meu sistema oscilou um pouco, mas meu coração continua pronto para te ouvir. Como você está se sentindo?" 
-    });
+    res.status(200).json({ resposta: "Sinto muito, tive um problema técnico. Pode me contar de novo o que está sentindo?" });
   }
 };
+
